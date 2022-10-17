@@ -1,15 +1,18 @@
 // global packages
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // UTILITIES
 const config = require('../utilities/config');
 const commonCodes = require('../utilities/commonCodes');
 const response = require('../utilities/response');
-const { confirmTransaction } = require('../utilities/request');
+const { confirmRequest } = require('../utilities/request');
 const { decryptRimitData } = require('../utilities/crypto');
 
+//
 // FETCH ACCOUNT
 const creditAmount = async (req, res, next) => {
     console.log('------------------');
@@ -19,7 +22,7 @@ const creditAmount = async (req, res, next) => {
     const head = {
         api: 'creditAmount',
         apiVersion: 'V1',
-        timeStamp: dayjs().utc().format(),
+        timeStamp: dayjs().tz('Asia/Calcutta').format('YYYY-MM-DD hh:mm:ss A'),
     };
 
     try {
@@ -47,7 +50,9 @@ const creditAmount = async (req, res, next) => {
         const CREDIT_CONFIRM_HEAD = {
             api: 'confirmCredit',
             apiVersion: 'V1',
-            timeStamp: dayjs().utc().format(),
+            timeStamp: dayjs()
+                .tz('Asia/Calcutta')
+                .format('YYYY-MM-DD hh:mm:ss A'),
             auth: {
                 API_ID: AUTH_API_ID,
                 API_KEY: AUTH_API_KEY,
@@ -70,33 +75,27 @@ const creditAmount = async (req, res, next) => {
                 status: commonCodes.STATUS_ERROR,
                 message: commonCodes.RESULT_MESSAGE_E2008,
             };
+            const data = {};
 
             head.HTTP_CODE = commonCodes.HTTP_CODE_BAD_REQUEST;
             return response.error(res, result, head, data);
         }
 
-        const USER = DECRYPTED_DATA.content.data.beneficiary;
+        const USER = DECRYPTED_DATA.content.data.user;
         const TRANSACTION = DECRYPTED_DATA.content.data.transaction;
-        const REFUND_REFERENCE = DECRYPTED_DATA.content.data.refund_reference;
 
         const USER_MOBILE = USER.mobile;
         const USER_COUNTRY_CODE = USER.country_code;
         const USER_ACCOUNT_NUMBER = USER.account_number;
         const USER_BRANCH_CODE = USER.branch_code;
 
-        const TRANSACTION_TYPE = TRANSACTION.type;
-        const TRANSACTION_ID = TRANSACTION.txn_id;
-        const TRANSACTION_AMOUNT = TRANSACTION.amount;
+        const TRANSACTION_TYPE = TRANSACTION.txn_type;
+        const TRANSACTION_NATURE = TRANSACTION.txn_nature;
+        const TRANSACTION_URN = TRANSACTION.txn_urn;
+        const TRANSACTION_NO = TRANSACTION.txn_number;
+        const TRANSACTION_AMOUNT = TRANSACTION.txn_amount;
         const TRANSACTION_DATE = TRANSACTION.date;
         const TRANSACTION_TIME = TRANSACTION.time;
-
-        let REFUND_ID, REFUND_AMOUNT, REFUND_DATE, REFUND_TIME;
-        if (TRANSACTION_TYPE === 'REFUND_CREDIT') {
-            REFUND_ID = REFUND_REFERENCE.txn_id;
-            REFUND_AMOUNT = REFUND_REFERENCE.amount;
-            REFUND_DATE = REFUND_REFERENCE.date;
-            REFUND_TIME = REFUND_REFERENCE.time;
-        }
 
         /*  */
         /*  */
@@ -119,10 +118,12 @@ const creditAmount = async (req, res, next) => {
         /*  */
 
         const CREDIT_CONFIRM_DATA = {
-            txn_id: TRANSACTION_ID,
+            txn_urn: TRANSACTION_URN,
+            txn_number: TRANSACTION_NO,
             txn_reference: TRANSACTION_REF,
             txn_amount: TRANSACTION_AMOUNT,
             txn_type: TRANSACTION_TYPE,
+            txn_nature: TRANSACTION_NATURE,
             account_balance: ACCOUNT_BALANCE,
         };
 
@@ -136,7 +137,7 @@ const creditAmount = async (req, res, next) => {
                 message: commonCodes.RESULT_MESSAGE_E8897,
             };
 
-            const CREDIT_CONFIRM = await confirmTransaction(
+            const CREDIT_CONFIRM = await confirmRequest(
                 CREDIT_CONFIRM_HEAD,
                 CREDIT_CONFIRM_RESULT,
                 CREDIT_CONFIRM_DATA,
@@ -164,7 +165,7 @@ const creditAmount = async (req, res, next) => {
             message: commonCodes.RESULT_MESSAGE_E1001,
         };
 
-        const CREDIT_CONFIRM = await confirmTransaction(
+        const CREDIT_CONFIRM = await confirmRequest(
             CREDIT_CONFIRM_HEAD,
             CREDIT_CONFIRM_RESULT,
             CREDIT_CONFIRM_DATA,

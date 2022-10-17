@@ -25,4 +25,5 @@ if (config.MULTY_TENANT_MODE === 'PARAMS') {
 }
 
 router.post('/transaction/status', txnStatus);
+
 module.exports = router;

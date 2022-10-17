@@ -1,7 +1,9 @@
 // global packages
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // UTILITIES
 const config = require('../utilities/config');
@@ -9,6 +11,7 @@ const commonCodes = require('../utilities/commonCodes');
 const response = require('../utilities/response');
 const { decryptRimitData } = require('../utilities/crypto');
 
+//
 // CHECK ACCOUNT BALANCE
 const accountStatement = async (req, res, next) => {
     console.log('------------------');
@@ -18,7 +21,7 @@ const accountStatement = async (req, res, next) => {
     const head = {
         api: 'accountStatement',
         apiVersion: 'V1',
-        timeStamp: dayjs().utc().format(),
+        timeStamp: dayjs().tz('Asia/Calcutta').format('YYYY-MM-DD hh:mm:ss A'),
     };
 
     try {
@@ -101,22 +104,22 @@ const accountStatement = async (req, res, next) => {
         /* FIND ALL TRANSACTIONS BETWEEN START_DATE & END_DATE IN THE RESPECTIVE ACCOUNT */
         const ACCOUNT_TRANSACTION = [
             {
-                txn_id: '1245236ss45s4ad',
-                date: '2020-11-04',
-                time: '02:30PM',
-                debit_amount: '8,058.50',
+                txn_id: '',
+                date: '',
+                time: '',
+                debit_amount: '',
                 credit_amount: '',
-                balance: '2640.50',
-                description: 'Cheque Number - 005652',
+                balance: '',
+                description: '',
             },
             {
-                txn_id: 'ht445236546h45fedd',
-                date: '2020-11-21',
-                time: '02:30PM',
+                txn_id: '',
+                date: '',
+                time: '',
                 debit_amount: '',
-                credit_amount: '10499.00',
-                balance: '10699.00',
-                description: 'Cash Self Deposit',
+                credit_amount: '',
+                balance: '',
+                description: '',
             },
         ];
         /*  */
@@ -145,6 +148,7 @@ const accountStatement = async (req, res, next) => {
             balance_amount: ACC_BALANCE,
             start_date: START_DATE,
             end_date: END_DATE,
+            transaction_count: ACCOUNT_TRANSACTION.length.toString(),
         };
 
         result = {

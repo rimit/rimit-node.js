@@ -2,7 +2,7 @@ const axios = require('axios');
 const commonCodes = require('./commonCodes');
 const { encryptRimitData, decryptRimitData } = require('../utilities/crypto');
 
-module.exports.confirmTransaction = async (head, result, data, uri, key) => {
+module.exports.confirmRequest = async (head, result, data, uri, key) => {
     let encryptData = { content: { result: result, data: data } };
 
     console.log('---------------------');
@@ -28,7 +28,7 @@ module.exports.confirmTransaction = async (head, result, data, uri, key) => {
         });
 
     if (response.head.HTTP_CODE === commonCodes.HTTP_CODE_BAD_REQUEST) {
-        return response.content;
+        return response;
     }
 
     console.log('---------------------');
@@ -38,5 +38,6 @@ module.exports.confirmTransaction = async (head, result, data, uri, key) => {
 
     let decrypted = await decryptRimitData(response.encrypted_data, key);
 
-    return decrypted.content;
+    const responseData = { head: response.head, content: decrypted.content };
+    return responseData;
 };

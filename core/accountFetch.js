@@ -1,14 +1,18 @@
 // global packages
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // UTILITIES
 const config = require('../utilities/config');
 const commonCodes = require('../utilities/commonCodes');
 const response = require('../utilities/response');
 const { decryptRimitData } = require('../utilities/crypto');
+const { confirmRequest } = require('../utilities/request');
 
+//
 // FETCH ACCOUNT
 const accountFetch = async (req, res, next) => {
     console.log('------------------');
@@ -18,7 +22,7 @@ const accountFetch = async (req, res, next) => {
     const head = {
         api: 'accountFetch',
         apiVersion: 'V1',
-        timeStamp: dayjs().utc().format(),
+        timeStamp: dayjs().tz('Asia/Calcutta').format('YYYY-MM-DD hh:mm:ss A'),
     };
 
     try {
@@ -34,7 +38,6 @@ const accountFetch = async (req, res, next) => {
 
         let result;
         let data = {};
-        let USER_ACCOUNTS = [];
 
         /*  */
         /* ASSIGN ENCRYPTION_KEY OF ENTITY */
@@ -88,82 +91,23 @@ const accountFetch = async (req, res, next) => {
         }
         /*  */
 
-        /*  */
-        /* READ ALL ACCOUNTS OF THE USER IN ACCOUNTS DATA */
-        const ACCOUNTS_DATA = [
-            {
-                account_name: 'ATHISH BALU',
-                account_number: '11223333',
-                branch_code: 'BR001',
-                branch_name: 'KANNUR',
-                account_type: 'SAVING_ACCOUNT',
-                account_class: 'SAVING',
-                txn_amount_limit: '5000',
-                account_status: 'ACTIVE',
-                account_opening_date: '2020-09-01',
+        const USER_DATA = {
+            mobile: USER_MOBILE,
+            country_code: USER_CC,
+        };
+        // IF SUCCESSFUL, CALL addAccount
+        addAccount(USER_DATA);
 
-                is_debit_allowed: true,
-                is_credit_allowed: true,
-                is_cash_debit_allowed: true,
-                is_cash_credit_allowed: true,
-            },
-            {
-                account_name: 'ATHISH BALU K',
-                account_number: '613274841345',
-                branch_code: 'BR002',
-                branch_name: 'ERNAKULAM',
-                account_type: 'GOLD_LOAN',
-                account_class: 'GOLD',
-                txn_amount_limit: '200000',
-
-                account_status: 'ACTIVE',
-                account_opening_date: '2020-12-10',
-
-                is_debit_allowed: true,
-                is_credit_allowed: true,
-                is_cash_debit_allowed: false,
-                is_cash_credit_allowed: false,
-            },
-        ];
-        /*  */
-
-        /*  */
-        /* ASSIGN DATA RECEIVED FROM ACCOUNTS_DATA ARRAY */
-        if (ACCOUNTS_DATA.length > 0) {
-            for (const i in ACCOUNTS_DATA) {
-                const details = {
-                    account_name: ACCOUNTS_DATA[i].account_name,
-                    account_number: ACCOUNTS_DATA[i].account_number,
-                    branch_code: ACCOUNTS_DATA[i].branch_code,
-                    branch_name: ACCOUNTS_DATA[i].branch_name,
-                    account_type: ACCOUNTS_DATA[i].account_type,
-                    account_class: ACCOUNTS_DATA[i].account_class,
-                    txn_amount_limit: ACCOUNTS_DATA[i].txn_amount_limit,
-                    account_status: ACCOUNTS_DATA[i].account_status,
-                    account_opening_date: ACCOUNTS_DATA[i].account_opening_date,
-
-                    is_debit_allowed: ACCOUNTS_DATA[i].is_debit_allowed,
-                    is_credit_allowed: ACCOUNTS_DATA[i].is_credit_allowed,
-                    is_cash_debit_allowed:
-                        ACCOUNTS_DATA[i].is_cash_debit_allowed,
-                    is_cash_credit_allowed:
-                        ACCOUNTS_DATA[i].is_cash_credit_allowed,
-                };
-
-                USER_ACCOUNTS.push(details);
-            }
-        }
-        /*  */
-
+        // SUCCESS RESPONSE
         result = {
             code: commonCodes.RESULT_CODE_SUCCESS,
             status: commonCodes.STATUS_SUCCESS,
             message: commonCodes.RESULT_MESSAGE_E1001,
         };
-        data = {
-            accounts: USER_ACCOUNTS,
-        };
+        data = {};
+
         head.HTTP_CODE = commonCodes.HTTP_CODE_SUCCESS;
+        console.log('LOG END LINE');
         return response.success(res, head, result, data, ENCRYPTION_KEY);
     } catch (error) {
         console.log(error);
@@ -175,6 +119,149 @@ const accountFetch = async (req, res, next) => {
 
         head.HTTP_CODE = commonCodes.HTTP_CODE_SERVICE_UNAVAILABLE;
         return response.error(res, result, head, data);
+    }
+};
+
+//
+// ADD ACCOUNT
+const addAccount = async (userData) => {
+    console.log('------------------');
+    console.log('REQUEST : AddAccount');
+    console.log('------------------');
+
+    try {
+        /*  */
+        /* ASSIGN ENCRYPTION_KEY, API_KEY & API_ID OF ENTITY */
+        const ENCRYPTION_KEY = '';
+        const AUTH_API_ID = '';
+        const AUTH_API_KEY = '';
+        /*  */
+
+        // ADD_ACCOUNT REQUEST URL
+        const ADD_ACCOUNT_URL = config.BASE_URL + '/account/add';
+
+        const ADD_ACCOUNT_HEAD = {
+            api: 'accountAdd',
+            apiVersion: 'V1',
+            timeStamp: dayjs()
+                .tz('Asia/Calcutta')
+                .format('YYYY-MM-DD hh:mm:ss A'),
+            auth: {
+                API_ID: AUTH_API_ID,
+                API_KEY: AUTH_API_KEY,
+            },
+        };
+
+        /*  */
+        /* ASSIGN USER DATA BASED ON REQUEST DATA ON accountFetch */
+        const USER_DATA = {
+            mobile: userData.mobile,
+            country_code: userData.country_code,
+        };
+        /*  */
+
+        /*  */
+        /* READ ALL ACCOUNTS OF THE USER IN ACCOUNTS DATA */
+        const ACCOUNTS_DATA = [
+            {
+                account_name: '',
+                account_number: '',
+                branch_code: '',
+                branch_name: '',
+
+                account_type: '',
+                account_class: '',
+                account_status: '',
+                account_opening_date: '',
+                account_currency: '',
+                account_daily_limit: '',
+
+                is_debit_allowed: true,
+                is_credit_allowed: true,
+                is_cash_debit_allowed: true,
+                is_cash_credit_allowed: true,
+
+                salt: '',
+            },
+        ];
+        /*  */
+
+        /*  */
+        /* ASSIGN DATA RECEIVED FROM ACCOUNTS_DATA ARRAY */
+        let USER_ACCOUNTS = [];
+        if (ACCOUNTS_DATA.length > 0) {
+            for (const i in ACCOUNTS_DATA) {
+                const details = {
+                    account_name: ACCOUNTS_DATA[i].account_name,
+                    account_number: ACCOUNTS_DATA[i].account_number,
+                    branch_code: ACCOUNTS_DATA[i].branch_code,
+                    branch_name: ACCOUNTS_DATA[i].branch_name,
+
+                    account_type: ACCOUNTS_DATA[i].account_type,
+                    account_class: ACCOUNTS_DATA[i].account_class,
+                    account_status: ACCOUNTS_DATA[i].account_status,
+                    account_opening_date: ACCOUNTS_DATA[i].account_opening_date,
+                    account_currency: ACCOUNTS_DATA[i].account_currency,
+                    account_daily_limit: ACCOUNTS_DATA[i].account_daily_limit,
+
+                    is_debit_allowed: ACCOUNTS_DATA[i].is_debit_allowed,
+                    is_credit_allowed: ACCOUNTS_DATA[i].is_credit_allowed,
+                    is_cash_debit_allowed:
+                        ACCOUNTS_DATA[i].is_cash_debit_allowed,
+                    is_cash_credit_allowed:
+                        ACCOUNTS_DATA[i].is_cash_credit_allowed,
+
+                    auth_salt: ACCOUNTS_DATA[i].salt,
+                };
+
+                USER_ACCOUNTS.push(details);
+            }
+        }
+        /*  */
+
+        const ADD_ACCOUNTS_DATA = {
+            user: USER_DATA,
+            accounts: USER_ACCOUNTS,
+        };
+
+        // IF THE ALL ACCOUNTS READ SUCCESSFULLY
+        const ADD_ACCOUNT_RESULT = {
+            code: commonCodes.RESULT_CODE_SUCCESS,
+            status: commonCodes.STATUS_SUCCESS,
+            message: commonCodes.RESULT_MESSAGE_E1001,
+        };
+
+        const ADD_ACCOUNT_CONFIRM = await confirmRequest(
+            ADD_ACCOUNT_HEAD,
+            ADD_ACCOUNT_RESULT,
+            ADD_ACCOUNTS_DATA,
+            ADD_ACCOUNT_URL,
+            ENCRYPTION_KEY
+        );
+
+        if (!ADD_ACCOUNT_CONFIRM) {
+            console.log('ADD_ACCOUNT_CONFIRM - REQUEST STATUS');
+            console.log(ADD_ACCOUNT_CONFIRM);
+            return;
+        }
+
+        console.log('*****************');
+        console.log('ADD_ACCOUNT_CONFIRM - RESPONSE');
+        console.log(ADD_ACCOUNT_CONFIRM);
+        console.log('*****************');
+
+        /*  */
+        /*  */
+
+        /* MANAGE RECEIVED RESPONSE */
+        /*  */
+
+        /*  */
+        /*  */
+        return true;
+        // res.status(200).send(ADD_ACCOUNT_CONFIRM);
+    } catch (error) {
+        console.log(error);
     }
 };
 

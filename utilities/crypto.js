@@ -1,4 +1,6 @@
 const crypto = require('crypto');
+const { hashData, hashVerify } = require('./hashing');
+
 module.exports.encryptRimitData = async (data, key) => {
     try {
         const iv = crypto.randomBytes(8).toString('hex');
@@ -15,7 +17,11 @@ module.exports.encryptRimitData = async (data, key) => {
         let encrypted = cipher.update(data, 'utf8', 'base64');
         encrypted += cipher.final('base64');
 
-        const encriptedData = { cipher_text: encrypted, iv: iv };
+        // CREATE SALT FROM cipher_text
+        const salt = iv + iv;
+        const hash = await hashData(encrypted, salt);
+
+        const encriptedData = { cipher_text: encrypted, iv: iv, hash: hash };
 
         console.log('*** ENCRYPTED DATA ***');
         console.log(encriptedData);
@@ -48,6 +54,15 @@ module.exports.decryptRimitData = async (data, key) => {
         console.log('*** DECRYPTED DATA ***');
         console.log(decriptedData);
         console.log('---------------------');
+
+        // CHECK THE cipher_text IS CORRECT
+        const salt = iv + iv;
+        const validateHash = await hashVerify(encrypted, data.hash, salt);
+        if (!validateHash) {
+            console.log('Valid Hash');
+            console.log(validateHash);
+            return false;
+        }
 
         return decriptedData;
     } catch (err) {
