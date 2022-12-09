@@ -18,6 +18,9 @@ const accountStatement = async (req, res, next) => {
     console.log('REQUEST : accountStatement');
     console.log('------------------');
 
+    console.log(req.body);
+    console.log('------------------');
+
     const head = {
         api: 'accountStatement',
         apiVersion: 'V1',

@@ -19,6 +19,9 @@ const debitAmount = async (req, res, next) => {
     console.log('REQUEST : debitAmount');
     console.log('------------------');
 
+    console.log(req.body);
+    console.log('------------------');
+
     const head = {
         api: 'debitAmount',
         apiVersion: 'V1',

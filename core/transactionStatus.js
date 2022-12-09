@@ -16,12 +16,15 @@ const txnStatus = async (req, res, next) => {
     console.log('REQUEST : txnStatus');
     console.log('------------------');
 
+    console.log(req.body);
+    console.log('------------------');
+
     try {
         /*  */
         /* ASSIGN ENCRYPTION_KEY, API_KEY & API_ID OF ENTITY */
-        const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
-        const AUTH_API_ID = process.env.API_ID;
-        const AUTH_API_KEY = process.env.API_KEY;
+        const ENCRYPTION_KEY = '';
+        const AUTH_API_ID = '';
+        const AUTH_API_KEY = '';
         /*  */
 
         /*  */
@@ -43,7 +46,7 @@ const txnStatus = async (req, res, next) => {
         const TXN_STATUS_URL = process.env.BASE_URL + '/transaction/status';
 
         const TXN_STATUS_HEAD = {
-            api: 'status',
+            api: 'txnStatus',
             apiVersion: 'V1',
             timeStamp: dayjs()
                 .tz('Asia/Calcutta')

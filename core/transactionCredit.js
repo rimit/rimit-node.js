@@ -19,6 +19,9 @@ const creditAmount = async (req, res, next) => {
     console.log('REQUEST : creditAmount');
     console.log('------------------');
 
+    console.log(req.body);
+    console.log('------------------');
+
     const head = {
         api: 'creditAmount',
         apiVersion: 'V1',

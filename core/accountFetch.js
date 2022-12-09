@@ -129,6 +129,9 @@ const addAccount = async (userData) => {
     console.log('REQUEST : AddAccount');
     console.log('------------------');
 
+    console.log(req.body);
+    console.log('------------------');
+
     try {
         /*  */
         /* ASSIGN ENCRYPTION_KEY, API_KEY & API_ID OF ENTITY */
