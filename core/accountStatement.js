@@ -148,7 +148,7 @@ const accountStatement = async (req, res, next) => {
             balance_amount: ACC_BALANCE,
             start_date: START_DATE,
             end_date: END_DATE,
-            transaction_count: ACCOUNT_TRANSACTION.length.toString(),
+            transactions_count: ACCOUNT_TRANSACTION.length.toString(),
         };
 
         result = {
