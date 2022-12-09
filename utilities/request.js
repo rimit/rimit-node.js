@@ -28,6 +28,10 @@ module.exports.confirmRequest = async (head, result, data, uri, key) => {
         });
 
     if (response.head.HTTP_CODE === commonCodes.HTTP_CODE_BAD_REQUEST) {
+        console.log('---------------------');
+        console.log('DECRYPTED FAILED');
+        console.log(response);
+        console.log('---------------------');
         return response;
     }
 
