@@ -46,7 +46,7 @@ const txnStatus = async (req, res, next) => {
         const TXN_STATUS_URL = process.env.BASE_URL + '/transaction/status';
 
         const TXN_STATUS_HEAD = {
-            api: 'txnStatus',
+            api: 'statusCheck',
             apiVersion: 'V1',
             timeStamp: dayjs()
                 .tz('Asia/Calcutta')
