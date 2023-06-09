@@ -19,7 +19,7 @@ module.exports.encryptRimitData = async (data, key) => {
 
         // CREATE SALT FROM cipher_text
         const salt = iv + iv;
-        const hash = await hashData(encrypted, salt);
+        const hash = await hashData(data, salt);
 
         const encriptedData = { cipher_text: encrypted, iv: iv, hash: hash };
 
@@ -49,15 +49,17 @@ module.exports.decryptRimitData = async (data, key) => {
 
         let decrypted = decipher.update(encrypted, 'base64', 'utf8');
         decrypted += decipher.final('utf8');
-        const decriptedData = JSON.parse(decrypted);
+        const decriptedString = decrypted;
+        const decriptedData = JSON.parse(decriptedString);
 
         console.log('*** DECRYPTED DATA ***');
+        console.log(decriptedString);
         console.log(decriptedData);
         console.log('---------------------');
 
         // CHECK THE cipher_text IS CORRECT
         const salt = iv + iv;
-        const validateHash = await hashVerify(encrypted, data.hash, salt);
+        const validateHash = await hashVerify(decriptedString, data.hash, salt);
         if (!validateHash) {
             console.log('Valid Hash');
             console.log(validateHash);

@@ -19,6 +19,9 @@ const accountFetch = async (req, res, next) => {
     console.log('REQUEST : accountFetch');
     console.log('------------------');
 
+    console.log(req.body);
+    console.log('------------------');
+
     const head = {
         api: 'accountFetch',
         apiVersion: 'V1',
@@ -107,7 +110,6 @@ const accountFetch = async (req, res, next) => {
         data = {};
 
         head.HTTP_CODE = commonCodes.HTTP_CODE_SUCCESS;
-        console.log('LOG END LINE');
         return response.success(res, head, result, data, ENCRYPTION_KEY);
     } catch (error) {
         console.log(error);
@@ -127,9 +129,6 @@ const accountFetch = async (req, res, next) => {
 const addAccount = async (userData) => {
     console.log('------------------');
     console.log('REQUEST : AddAccount');
-    console.log('------------------');
-
-    console.log(req.body);
     console.log('------------------');
 
     try {
@@ -241,12 +240,6 @@ const addAccount = async (userData) => {
             ADD_ACCOUNT_URL,
             ENCRYPTION_KEY
         );
-
-        if (!ADD_ACCOUNT_CONFIRM) {
-            console.log('ADD_ACCOUNT_CONFIRM - REQUEST STATUS');
-            console.log(ADD_ACCOUNT_CONFIRM);
-            return;
-        }
 
         console.log('*****************');
         console.log('ADD_ACCOUNT_CONFIRM - RESPONSE');

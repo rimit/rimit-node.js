@@ -27,7 +27,12 @@ module.exports.confirmRequest = async (head, result, data, uri, key) => {
             return false;
         });
 
-    if (response.head.HTTP_CODE === commonCodes.HTTP_CODE_BAD_REQUEST) {
+    const httpCode = response.head.HTTP_CODE;
+    if (
+        httpCode === commonCodes.HTTP_CODE_BAD_REQUEST ||
+        httpCode === commonCodes.HTTP_CODE_UNAUTHORIZED ||
+        httpCode === commonCodes.HTTP_CODE_SERVICE_UNAVAILABLE
+    ) {
         console.log('---------------------');
         console.log('DECRYPTED FAILED');
         console.log(response);

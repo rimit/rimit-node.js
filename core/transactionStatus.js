@@ -78,12 +78,6 @@ const txnStatus = async (req, res, next) => {
             ENCRYPTION_KEY
         );
 
-        if (!TXN_STATUS) {
-            console.log('TXN_STATUS - REQUEST STATUS');
-            console.log(TXN_STATUS);
-            return;
-        }
-
         console.log('*****************');
         console.log('TXN_STATUS - RESPONSE');
         console.log(TXN_STATUS);

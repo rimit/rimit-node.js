@@ -163,6 +163,7 @@ const accountStatement = async (req, res, next) => {
             account: USER_ACCOUNT_DATA,
             transactions: TRANSACTION_DATA,
         };
+
         head.HTTP_CODE = commonCodes.HTTP_CODE_SUCCESS;
         return response.success(res, head, result, data, ENCRYPTION_KEY);
     } catch (error) {

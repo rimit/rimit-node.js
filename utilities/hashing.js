@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 
-exports. = async (data, salt) => {
+const hashData = async (data, salt) => {
     try {
         const iterations = 2048;
         const hash = crypto
@@ -12,12 +12,13 @@ exports. = async (data, salt) => {
     }
 };
 
-exports.hashVerify = async (data, hash, salt) => {
+const hashVerify = async (data, hash, salt) => {
     try {
-        const iterations = 2048;
-        const newHash = await hashData(data, salt)
+        const newHash = await hashData(data, salt);
         return newHash === hash;
     } catch (error) {
         return false;
     }
 };
+
+module.exports = { hashData, hashVerify };

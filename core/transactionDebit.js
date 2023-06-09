@@ -90,16 +90,23 @@ const debitAmount = async (req, res, next) => {
         const USER_MOBILE = USER.mobile;
         const USER_COUNTRY_CODE = USER.country_code;
         const USER_ACCOUNT_NUMBER = USER.account_number;
+        const USER_ACCOUNT_CLASS = USER.account_class;
+        const USER_ACCOUNT_TYPE = USER.account_type;
         const USER_BRANCH_CODE = USER.branch_code;
 
+        const TRANSACTION_NO = TRANSACTION.txn_number;
+        const TRANSACTION_URN = TRANSACTION.txn_urn;
         const TRANSACTION_TYPE = TRANSACTION.txn_type;
         const TRANSACTION_NATURE = TRANSACTION.txn_nature;
-        const TRANSACTION_URN = TRANSACTION.txn_urn;
-        const TRANSACTION_NO = TRANSACTION.txn_number;
+        const TRANSACTION_NOTE = TRANSACTION.txn_note;
+        const TRANSACTION_DATE = TRANSACTION.txn_date;
+        const TRANSACTION_TIME = TRANSACTION.txn_time;
+        const TRANSACTION_TIMESTAMP = TRANSACTION.txn_ts;
         const TRANSACTION_AMOUNT = TRANSACTION.txn_amount;
-        const TRANSACTION_DATE = TRANSACTION.date;
-        const TRANSACTION_TIME = TRANSACTION.time;
-        
+        const TRANSACTION_SERVICE_CHARGE = TRANSACTION.txn_service_charge;
+        const TRANSACTION_SERVICE_PROVIDER_CHARGE = TRANSACTION.txn_sp_charge;
+        const TRANSACTION_FEE = TRANSACTION.txn_fee;
+
         const SETTLEMENT_ACCOUNT_TYPE = SETTLEMENT.account_type;
         const SETTLEMENT_ACCOUNT_NUMBER = SETTLEMENT.account_number;
 
@@ -151,12 +158,7 @@ const debitAmount = async (req, res, next) => {
                 ENCRYPTION_KEY
             );
 
-            if (!DEBIT_CONFIRM) {
-                console.log('DEBIT_CONFIRM - REQUEST STATUS');
-                console.log(DEBIT_CONFIRM);
-            }
-
-            console.log('DEBIT_CONFIRM - RESPONSE');
+            console.log('DEBIT_CONFIRM - CHECK_ACCOUNT_BALANCE - RESPONSE');
             console.log(DEBIT_CONFIRM);
             return;
         }
@@ -176,12 +178,6 @@ const debitAmount = async (req, res, next) => {
             DEBIT_CONFIRM_URL,
             ENCRYPTION_KEY
         );
-
-        if (!DEBIT_CONFIRM) {
-            console.log('DEBIT_CONFIRM - REQUEST STATUS');
-            console.log(DEBIT_CONFIRM);
-            return;
-        }
 
         console.log('*****************');
         console.log('DEBIT_CONFIRM - RESPONSE');
