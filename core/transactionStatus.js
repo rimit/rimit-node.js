@@ -12,6 +12,20 @@ const { confirmRequest } = require('../utilities/request');
 //
 // FETCH TRANSACTION STATUS
 const txnStatus = async (req, res, next) => {
+    /*  */
+    /* REQUEST PAYLOAD, FOR USING IN POSTMAN */
+    /*
+     {
+        "type": "",
+        "nature": "",
+        "no": "",
+        "urn": "",
+        "reference": "",
+        "amount": ""
+     }
+    */
+    /*  */
+
     console.log('------------------');
     console.log('REQUEST : txnStatus');
     console.log('------------------');
