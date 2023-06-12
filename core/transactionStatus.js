@@ -16,12 +16,12 @@ const txnStatus = async (req, res, next) => {
     /* REQUEST PAYLOAD, FOR USING IN POSTMAN */
     /*
      {
-        "type": "",
-        "nature": "",
-        "no": "",
-        "urn": "",
-        "reference": "",
-        "amount": ""
+        "txn_type": "",
+        "txn_nature": "",
+        "txn_number": "",
+        "txn_urn": "",
+        "txn_reference": "",
+        "txn_amount": ""
      }
     */
     /*  */
@@ -48,12 +48,12 @@ const txnStatus = async (req, res, next) => {
 
         /*  */
         /* ASSIGNING DATA RECIVED IN THE REQUEST  */
-        const TRANSACTION_TYPE = REQUEST_DATA.type;
-        const TRANSACTION_NATURE = REQUEST_DATA.nature;
-        const TRANSACTION_NUMBER = REQUEST_DATA.no;
-        const TRANSACTION_URN = REQUEST_DATA.urn;
-        const TRANSACTION_AMOUNT = REQUEST_DATA.amount;
-        const TRANSACTION_REF = REQUEST_DATA.reference;
+        const TRANSACTION_TYPE = REQUEST_DATA.txn_type;
+        const TRANSACTION_NATURE = REQUEST_DATA.txn_nature;
+        const TRANSACTION_NUMBER = REQUEST_DATA.txn_number;
+        const TRANSACTION_URN = REQUEST_DATA.txn_urn;
+        const TRANSACTION_AMOUNT = REQUEST_DATA.txn_amount;
+        const TRANSACTION_REF = REQUEST_DATA.txn_reference;
         /*  */
 
         // TXN_STATUS REQUEST URL
