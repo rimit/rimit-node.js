@@ -9,21 +9,22 @@ dayjs.extend(timezone);
 const config = require('../utilities/config');
 const commonCodes = require('../utilities/commonCodes');
 const response = require('../utilities/response');
+const { refID } = require('../utilities/dummy_data');
 const { confirmRequest } = require('../utilities/request');
 const { decryptRimitData } = require('../utilities/crypto');
 
 //
-// CREDIT AMOUNT - FUND TRANSFER
-const creditAmount = async (req, res, next) => {
+// WITHDRAW CASH
+const withdrawAmount = async (req, res, next) => {
     console.log('------------------');
-    console.log('REQUEST : creditAmount');
+    console.log('REQUEST : withdrawAmount');
     console.log('------------------');
 
     console.log(req.body);
     console.log('------------------');
 
     const head = {
-        api: 'creditAmount',
+        api: 'withdrawAmount',
         apiVersion: 'V1',
         timeStamp: dayjs().tz('Asia/Calcutta').format('YYYY-MM-DD hh:mm:ss A'),
     };
@@ -46,12 +47,11 @@ const creditAmount = async (req, res, next) => {
         const AUTH_API_KEY = '';
         /*  */
 
-        // CREDIT_CONFIRM REQUEST URL
-        const CREDIT_CONFIRM_URL =
-            config.BASE_URL + '/transaction/confirmCredit';
+        // DEBIT_CONFIRM REQUEST URL
+        const DEBIT_CONFIRM_URL = config.BASE_URL + '/transaction/confirmDebit';
 
-        const CREDIT_CONFIRM_HEAD = {
-            api: 'confirmCredit',
+        const DEBIT_CONFIRM_HEAD = {
+            api: 'confirmDebit',
             apiVersion: 'V1',
             timeStamp: dayjs()
                 .tz('Asia/Calcutta')
@@ -114,10 +114,10 @@ const creditAmount = async (req, res, next) => {
         /*  */
         /*  */
         /* VERIFY THE USER */
-        /* MANAGE SCOPE FOR FAILED TRANSACTIONS (Refer - https://doc.rimit.co/transaction-credit/confirm-credit#result-code) */
+        /* MANAGE SCOPE FOR FAILED TRANSACTIONS (Refer - https://doc.rimit.co/transaction-debit/confirm-debit#result-code) */
         /* VERIFY THE USER ACCOUNT */
         /* VERIFY THE USER ACCOUNT BALANCE AVAILABILITY */
-        /* CREDIT USER ACCOUNT WITH txn_amount */
+        /* DEBIT USER ACCOUNT WITH txn_amount */
         /*  */
         /*  */
 
@@ -131,7 +131,7 @@ const creditAmount = async (req, res, next) => {
         const ACCOUNT_BALANCE = '';
         /*  */
 
-        const CREDIT_CONFIRM_DATA = {
+        const DEBIT_CONFIRM_DATA = {
             txn_urn: TRANSACTION_URN,
             txn_number: TRANSACTION_NO,
             txn_reference: TRANSACTION_REF,
@@ -143,46 +143,46 @@ const creditAmount = async (req, res, next) => {
 
         /*  */
         /* EG FOR FAILED REQUEST : FIND LATEST ACCOUNT BALANCE, IF FOUND INSUFFICIENT, SEND REQUEST AS FAILED */
-        const CHECK_ACCOUNT_STATUS = true;
-        if (!CHECK_ACCOUNT_STATUS) {
-            const CREDIT_CONFIRM_RESULT = {
-                code: commonCodes.RESULT_CODE_ACCOUNT_IS_INACTIVE_BLOCKED_CLOSED,
+        const CHECK_LATEST_BALANCE = true;
+        if (!CHECK_LATEST_BALANCE) {
+            const DEBIT_CONFIRM_RESULT = {
+                code: commonCodes.RESULT_CODE_INSUFFICIENT_ACCOUNT_BALANCE,
                 status: commonCodes.STATUS_FAILED,
-                message: commonCodes.RESULT_MESSAGE_E8897,
+                message: commonCodes.RESULT_MESSAGE_E8899,
             };
 
-            const CREDIT_CONFIRM = await confirmRequest(
-                CREDIT_CONFIRM_HEAD,
-                CREDIT_CONFIRM_RESULT,
-                CREDIT_CONFIRM_DATA,
-                CREDIT_CONFIRM_URL,
+            const DEBIT_CONFIRM = await confirmRequest(
+                DEBIT_CONFIRM_HEAD,
+                DEBIT_CONFIRM_RESULT,
+                DEBIT_CONFIRM_DATA,
+                DEBIT_CONFIRM_URL,
                 ENCRYPTION_KEY
             );
 
-            console.log('CREDIT_CONFIRM - CHECK_ACCOUNT_STATUS - RESPONSE');
-            console.log(CREDIT_CONFIRM);
+            console.log('DEBIT_CONFIRM - CHECK_LATEST_BALANCE - RESPONSE');
+            console.log(DEBIT_CONFIRM);
             return;
         }
         /*  */
 
-        // IF THE CREDIT AMOUNT IS SUCCESSFUL
-        const CREDIT_CONFIRM_RESULT = {
-            code: commonCodes.RESULT_CODE_SUCCESS,
-            status: commonCodes.STATUS_SUCCESS,
-            message: commonCodes.RESULT_MESSAGE_E1001,
+        // IF THE DEBIT AMOUNT IS SUCCESSFUL
+        const DEBIT_CONFIRM_RESULT = {
+            code: commonCodes.RESULT_CODE_HOLD,
+            status: commonCodes.STATUS_HOLD,
+            message: commonCodes.RESULT_MESSAGE_E1002,
         };
 
-        const CREDIT_CONFIRM = await confirmRequest(
-            CREDIT_CONFIRM_HEAD,
-            CREDIT_CONFIRM_RESULT,
-            CREDIT_CONFIRM_DATA,
-            CREDIT_CONFIRM_URL,
+        const DEBIT_CONFIRM = await confirmRequest(
+            DEBIT_CONFIRM_HEAD,
+            DEBIT_CONFIRM_RESULT,
+            DEBIT_CONFIRM_DATA,
+            DEBIT_CONFIRM_URL,
             ENCRYPTION_KEY
         );
 
         console.log('*****************');
-        console.log('CREDIT_CONFIRM - RESPONSE');
-        console.log(CREDIT_CONFIRM);
+        console.log('DEBIT_CONFIRM - RESPONSE');
+        console.log(DEBIT_CONFIRM);
         console.log('*****************');
 
         /*  */
@@ -199,6 +199,108 @@ const creditAmount = async (req, res, next) => {
     }
 };
 
+//
+// WITHDRAW SUCCESS CONFIRM
+const withdrawSuccess = async (req, res, next) => {
+    /*  */
+    /* REQUEST PAYLOAD, FOR USING IN POSTMAN */
+    /*
+     {
+        "txn_urn": "",
+        "txn_number": "",
+        "txn_type": "",
+        "txn_nature": "",
+        "txn_amount": ""
+     }
+    */
+    /*  */
+
+    console.log('------------------');
+    console.log('REQUEST : withdrawSuccess');
+    console.log('------------------');
+
+    console.log(req.body);
+    console.log('------------------');
+
+    try {
+        // ASSIGNING DATA RECIVED IN THE REQUEST
+        const TRANSACTION = req.body;
+
+        const TRANSACTION_NO = TRANSACTION.txn_number;
+        const TRANSACTION_URN = TRANSACTION.txn_urn;
+        const TRANSACTION_TYPE = TRANSACTION.txn_type;
+        const TRANSACTION_NATURE = TRANSACTION.txn_nature;
+        const TRANSACTION_AMOUNT = TRANSACTION.txn_amount;
+
+        /*  */
+        /* ASSIGN ENCRYPTION_KEY, API_KEY & API_ID OF ENTITY */
+        const ENCRYPTION_KEY = '';
+        const AUTH_API_ID = '';
+        const AUTH_API_KEY = '';
+        /*  */
+
+        // DEBIT_CONFIRM REQUEST URL
+        const DEBIT_CONFIRM_URL = config.BASE_URL + '/transaction/confirmDebit';
+
+        const DEBIT_CONFIRM_HEAD = {
+            api: 'confirmDebit',
+            apiVersion: 'V1',
+            timeStamp: dayjs()
+                .tz('Asia/Calcutta')
+                .format('YYYY-MM-DD hh:mm:ss A'),
+            auth: {
+                API_ID: AUTH_API_ID,
+                API_KEY: AUTH_API_KEY,
+            },
+        };
+
+        /*  */
+        /* GENERATE A UNIQUE TRANSACTION_REF */
+        const TRANSACTION_REF = '';
+        /*  */
+
+        /*  */
+        /* ASSIGN LATEST ACCOUNT_BALANCE AFTER CREDITING THE TRANSACTION_AMOUNT */
+        const ACCOUNT_BALANCE = '';
+        /*  */
+
+        const DEBIT_CONFIRM_DATA = {
+            txn_urn: TRANSACTION_URN,
+            txn_number: TRANSACTION_NO,
+            txn_reference: TRANSACTION_REF,
+            txn_amount: TRANSACTION_AMOUNT,
+            txn_type: TRANSACTION_TYPE,
+            txn_nature: TRANSACTION_NATURE,
+            account_balance: ACCOUNT_BALANCE,
+        };
+
+        // IF THE DEBIT AMOUNT IS SUCCESSFUL
+        const DEBIT_CONFIRM_RESULT = {
+            code: commonCodes.RESULT_CODE_SUCCESS,
+            status: commonCodes.STATUS_SUCCESS,
+            message: commonCodes.RESULT_MESSAGE_E1001,
+        };
+
+        const DEBIT_CONFIRM = await confirmRequest(
+            DEBIT_CONFIRM_HEAD,
+            DEBIT_CONFIRM_RESULT,
+            DEBIT_CONFIRM_DATA,
+            DEBIT_CONFIRM_URL,
+            ENCRYPTION_KEY
+        );
+
+        console.log('*****************');
+        console.log('DEBIT_CONFIRM - RESPONSE');
+        console.log(DEBIT_CONFIRM);
+        console.log('*****************');
+
+        return res.status(200).send(DEBIT_CONFIRM);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 module.exports = {
-    creditAmount,
+    withdrawAmount,
+    withdrawSuccess,
 };

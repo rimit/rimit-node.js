@@ -10,7 +10,7 @@ const config = require('../utilities/config');
 const { confirmRequest } = require('../utilities/request');
 
 //
-// FETCH ACCOUNT
+// FETCH TRANSACTION STATUS
 const txnStatus = async (req, res, next) => {
     console.log('------------------');
     console.log('REQUEST : txnStatus');

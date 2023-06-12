@@ -13,7 +13,7 @@ const { confirmRequest } = require('../utilities/request');
 const { decryptRimitData } = require('../utilities/crypto');
 
 //
-// FETCH ACCOUNT
+// DEBIT AMOUNT - FUND TRANSFER
 const debitAmount = async (req, res, next) => {
     console.log('------------------');
     console.log('REQUEST : debitAmount');

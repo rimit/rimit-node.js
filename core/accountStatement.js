@@ -12,7 +12,7 @@ const response = require('../utilities/response');
 const { decryptRimitData } = require('../utilities/crypto');
 
 //
-// CHECK ACCOUNT BALANCE
+// CHECK ACCOUNT STATEMENT
 const accountStatement = async (req, res, next) => {
     console.log('------------------');
     console.log('REQUEST : accountStatement');
