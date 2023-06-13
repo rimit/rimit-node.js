@@ -31,5 +31,9 @@ The developer kit contains the following directories.
     Used to manage debit transactions.
 -   **transactionCredit**\
     Used to manage credit transactions.
+-   **transactionCashWithdraw**\
+    Used to manage cash withdraw transactions.
+-   **transactionCashDeposit**\
+    Used to manage cash deposit transactions.
 -   **statusCheck**\
     Used to find the latest status of the transaction.
