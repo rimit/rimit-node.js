@@ -108,8 +108,8 @@ const depositAmount = async (req, res, next) => {
         const TRANSACTION_SERVICE_PROVIDER_CHARGE = TRANSACTION.txn_sp_charge;
         const TRANSACTION_FEE = TRANSACTION.txn_fee;
 
-        const SETTLEMENT_ACCOUNT_TYPE = SETTLEMENT.account_type;
-        const SETTLEMENT_ACCOUNT_NUMBER = SETTLEMENT.account_number;
+        const SETTLEMENT_ACCOUNT_TYPE = SETTLEMENT.account_type; // no settlement is involved for CASH transaction. So 'NA' will be received.
+        const SETTLEMENT_ACCOUNT_NUMBER = SETTLEMENT.account_number; // will be empty for CASH transactions.
 
         /*  */
         /*  */
