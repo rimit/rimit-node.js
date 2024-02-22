@@ -1,5 +1,5 @@
 module.exports = {
-    // FOR MORE INFO CHECK THE DOCUMENT - https://developer.rimit.in/getting-started/readme#rest
+    // FOR MORE INFO CHECK THE DOCUMENT - https://developer.rimit.in/getting-started/readme
     BASE_URL: 'https://uat-gateway.rimit.in/api/client/rimit/v1', // FOR UAT API
     // BASE_URL: 'https://api-gateway.rimit.in/api/client/rimit/v1', // FOR PRODUCTION API
 
